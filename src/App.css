@@ -1,33 +1,65 @@
 .App {
-  text-align: center;
+    font-family: helvetica, sans;
+    font-size: 12px;
+    padding: 10px 40px;
+}
+.main {
+    color: #111111;
+    background-color: #fafafa; 
+    width: 880px;
+    margin: 0 auto;
+}
+h1 {
+    color: #555555;
+    font-size: 1.3em;
+    text-align: center;
+    border-bottom: solid 2px #6666aa;
+}
+/** Table scrolls the body with the head staying in place. **/
+div.donationTable {
+    width: 800px;
+    height: 500px;
+    border: solid 1px gray;
+    overflow: auto;
+    margin: 20px 0;
+}
+.donationTable table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.donationTable thead th {
+    position: sticky;
+    top: 0;
+    color: #eeeeee;
+    padding: 3px 2px;
+    background-color: #445566;    
+    border: 0;
+}
+.donationTable table td {
+    font-family: helvetica, sans;
+    font-size: 1.1em;
+    text-align: right;
+    padding: 3px 8px;
 }
 
-.App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+.none {
+    font-style: italic;
+    text-align: center;
+    padding-top: 100px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+button:focus {
+    outline: 0;
+}
+button {
+    border: solid 1px gray;
+    background-color: #fafafa;
+}
+button.on {
+    color: #ffffff;
+    background-color: #666666;
 }
 
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.addresses {
+    width: 300px;
 }
