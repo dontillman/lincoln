@@ -7,13 +7,19 @@
     color: #111111;
     background-color: #fafafa; 
     width: 880px;
-    margin: 0 auto;
+    margin: 20px auto;
+    border: solid 1px #884433;
+    box-shadow: 0 0 4px #666666;
+}
+.main p {
+    padding: 0 80px 0 40px;
 }
 h1 {
     color: #555555;
     font-size: 1.3em;
     text-align: center;
     border-bottom: solid 2px #6666aa;
+    padding-bottom: 10px;
 }
 /** Table scrolls the body with the head staying in place. **/
 div.donationTable {
@@ -64,6 +70,6 @@ button.on {
     width: 300px;
 }
 .emailsBad {
-    color: red;
+    color: #aa3333;
     width: 300px;
 }

@@ -26,16 +26,16 @@ function csvToObjs(str) {
     return [keys, objs];
 }
 
-// Return a list of email address, when valid, and between 1 and 3 in number.
+// boolean if the string is a valid list of email addresses.
 function legalEmails(str) {
+    const maximum = 3;
     var addresses = str.trim().split(',').map(s => s.trim());
-    if ((0 == addresses.length) || (3 < addresses.length)) {
+    if ((0 == addresses.length) || (maximum < addresses.length)) {
 	return false;
     }
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return addresses.every(s => re.test(s));
 }
-
 
 // Donation Table widget
 //
@@ -178,7 +178,8 @@ class App extends Component {
                 Dragging and dropping a donation CSV file will add
                 those donations to the table.  Any number of files can
                 be added.  You can add a file multiple times and we're
-                not going to check.
+                not going to check.  Any number of files can be dropped
+                at once.
               </p>
               <p>
                 The total donations are summed below.
@@ -190,9 +191,10 @@ class App extends Component {
               <p>
                 You can have a small email message sent out for each
                 set of donations added. For this you need to supply a
-                list of email messages and a super secret user ID.
-                It's for a freebie limited trial account.  Maximum of
-                3 email addresses for now.
+                list of email addresses and a super secret user ID you
+                can get from Don.  The email address field automatically
+                validates.  There are a maximum of 3 email addresses
+                for now.
               </p>
               <div {... { onDrop: this.dropHandler } } >
                 <DonationTable {...{ keys: this.state.donationKeys,
@@ -212,7 +214,7 @@ class App extends Component {
                   { this.state.note }
                 </p>
                 <p>
-                  Email addresses for alerts (comma delimitted):
+                  Email addresses for alerts (comma separated):
                   <input {...{ className: legalEmails(this.state.addresses) ? 'emails' : 'emailsBad',
 			       value: this.state.addresses,
 			       onChange: ev => this.setState({addresses: ev.target.value }) }} />
