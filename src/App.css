@@ -60,6 +60,10 @@ button.on {
     background-color: #666666;
 }
 
-.addresses {
+.emails {
+    width: 300px;
+}
+.emailsBad {
+    color: red;
     width: 300px;
 }
