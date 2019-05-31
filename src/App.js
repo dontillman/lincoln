@@ -251,7 +251,7 @@ class App extends Component {
                   <button {...{ onClick: ev => this.setState({anon: !this.state.anon}),
                                 className: (this.state.anon) ? 'on' : ''}} >
                     Filter
-                  </button> out anonymouse donations.
+                  </button> out anonymous donations.
                 </p>
                 <p>
                   { this.state.note }
