@@ -30,7 +30,7 @@ function csvToObjs(str) {
 function legalEmails(str) {
     const maximum = 3;
     var addresses = str.trim().split(',').map(s => s.trim());
-    if ((0 == addresses.length) || (maximum < addresses.length)) {
+    if ((0 === addresses.length) || (maximum < addresses.length)) {
 	return false;
     }
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,6 +44,10 @@ function legalEmails(str) {
 //   donations: a list of objects
 //   anon: true to filter out anonymous donors
 class DonationTable extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {sort: null};
+    }
 
     // make a CSV key presentable for a column heading
     prettyKey = key => {
@@ -53,41 +57,77 @@ class DonationTable extends Component {
             return right.charAt(0).toUpperCase() + right.slice(1);
         } else {
             return right.toUpperCase();
-        }            
-    }        
+        }
+    }
+
+    // set the sort column, flip it if it's already this
+    // the sort state is of the form null, or [key, bool] (for flipped).
+    sortCol = ev => {
+        const k = ev.target.attributes.dkey.value;
+        const s = this.state.sort;
+        this.setState({ sort: [k, (s && (k === s[0])) ? !s[1] : false] });
+    }
+
+    // retrieve the donations, filtered and sorted
+    // separate for testability
+    getDonations() {
+        var ds = this.props.donations;
+
+        // filter out anons
+        if (this.props.anon) {
+            ds = ds.filter(d => d.donor_name);
+        }
+
+        // sorting (use numeric sort when possible)
+        const s = this.state.sort;
+        if (null !== s) {
+            const [k, rev] = s;
+            ds.sort((a, b) =>
+                    // reverse
+                    ((rev) ? -1 : 1)
+                    * ((isNaN(a) || isNaN(b))
+                       // not both numbers
+                       ? ((a[k] === b[k]) ? 0 : (a[k] < b[k]) ? -1 : +1)
+                       // both numbers
+                       : a[k] - b[k]));
+        }
+        return ds;
+    }
 
     render() {
         const keys = this.props.keys;
         // (don't get confused: two different uses of "key" here: )
         const headings = keys.map((k, i) =>
-                                  <th {...{ key: i}}>
+                                  <th {...{ key: i,
+                                            dkey: k,
+                                            onClick: this.sortCol}}>
                                     { this.prettyKey(k) }
                                   </th>);
-        // the table body 
-        const body = this.props.donations
-              .filter(d => !this.props.anon || d.donor_name)
-              .map((d, i) => (
-                  <tr {...{key: i}} >
-                    { keys.map((k, i) => <td {...{ key: i }} >
-                                           { d[k] }
-                                         </td>) }
-                  </tr>
-              ));
+        // the table body
+        const body = this.getDonations().map((d, i) => (
+            <tr {...{key: i}} >
+              { keys.map((k, i) => <td {...{ key: i }} >
+                                     { d[k] }
+                                   </td>) }
+            </tr>
+        ));
         return (
             <div {...{className: 'donationTable'}} >
               {
-                  (this.props.donations.length) ? (
-                      <table>
-                        <thead><tr>{ headings }</tr></thead>
-                        <tbody>{ body }</tbody>
-                      </table>
-                  ) : (
-                      <p {...{className: 'none'}}>
-                        No donations loaded.
-                        <br />
-                        Drag a CSV file here to add in donation data.
-                      </p>
-                  )
+                  (this.props.donations.length)
+                      ? (
+                          <table>
+                            <thead><tr>{ headings }</tr></thead>
+                            <tbody>{ body }</tbody>
+                          </table>
+                      )
+                      : (
+                          <p {...{className: 'none'}}>
+                            No donations loaded.
+                            <br />
+                            Drag a CSV file here to add in donation data.
+                          </p>
+                      )
               }
             </div>
         );
@@ -146,14 +186,14 @@ class App extends Component {
                                  to_addresses: this.state.addresses.trim() });
         }
     }
-                       
+
     // User has just dropped a file, or multiple files.
     dropHandler = ev => {
         ev.preventDefault();
 
         // support both interfaces
         if (ev.dataTransfer.items) {
-	    // interface: DataTransferItemList 
+	    // interface: DataTransferItemList
 	    const items = ev.dataTransfer.items;
 	    for (let i = 0; i < items.length; i++) {
 	        const item = items[i];
@@ -195,6 +235,9 @@ class App extends Component {
                 can get from Don.  The email address field automatically
                 validates.  There are a maximum of 3 email addresses
                 for now.
+              </p>
+              <p>
+                Later... added column sorting.
               </p>
               <div {... { onDrop: this.dropHandler } } >
                 <DonationTable {...{ keys: this.state.donationKeys,

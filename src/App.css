@@ -41,6 +41,12 @@ div.donationTable {
     background-color: #445566;    
     border: 0;
 }
+
+.donationTable thead th:hover {
+    color: #3333dd;
+    background-color:#aaaaaa;
+}
+
 .donationTable table td {
     font-family: helvetica, sans;
     font-size: 1.1em;
